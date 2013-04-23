@@ -1,9 +1,0 @@
-%% compute a binary training
-load(['datasets' filesep 'norb_binary']);
-train_cat_s=train_cats_s-2; % change 1 and 3 to -1 and 1
-
-M=576;
-H1=6;
-H2=3;
-
-trainBinaryMLP(M, H1, H2, train_left_s,train_righ

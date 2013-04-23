@@ -1,6 +1,0 @@
-16/04/2013
-SAM
-la fonction mlp est testé (via test_gradient.m) et renvoie le bon gradient.
-J'ai commencé à implémenter la fonction trainBinaryMLP
-pas encore testée
-et elle peut de toute façon être améliorée avec un meilleur critère de convergence
