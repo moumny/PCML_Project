@@ -1,4 +1,4 @@
-function weights= initializeWeights(M, H1, H2)
+function weights= initializeWeights(M, H1, H2, K)
 % furnishes a set of initialized vector
 % made following the instructions of page 9 of description 
 % output : 
@@ -16,9 +16,9 @@ B2LR= randn(H2, 1)/2/H1;
 W2R= randn(H2, H1)/H1;
 B2R= randn(H2,1)/H1;
 
-W3= randn(1,H2)/H2;
-B3= randn(1,1)/H2;
+W3= randn(K,H2)/H2;
+B3= randn(K,1)/H2;
 
-weights=weightsToVector( M, H1, H2, W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3 );
+weights=weightsToVector( M, H1, H2, K, W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3 );
 end
 

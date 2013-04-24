@@ -16,7 +16,7 @@ function [ output, grad ] = mlp(M, H1, H2, XL, XR, weights, training, ti)
 % derivation is explained in mlp_implementation.pdf
 
 % put the weights on a matrix form 
-[W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3] = weightsToMatrix(M, H1, H2, weights);
+[W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3] = weightsToMatrix(M, H1, H2, 1, weights);
 
 %forward pass
 %compute first layer + hidden part
@@ -71,6 +71,6 @@ grad_B1L=r1L;
 grad_B1R=r1R;
 
 % put the gradient induced by this instance in the form of a column vector
-grad=weightsToVector(M,H1,H2, grad_W1L, grad_B1L, grad_W1R, grad_B1R, grad_W2L, grad_B2L, grad_W2LR, grad_B2LR, grad_W2R, grad_B2R, grad_W3, grad_B3); 
+grad=weightsToVector(M, H1, H2, 1, grad_W1L, grad_B1L, grad_W1R, grad_B1R, grad_W2L, grad_B2L, grad_W2LR, grad_B2LR, grad_W2R, grad_B2R, grad_W3, grad_B3); 
 end
 

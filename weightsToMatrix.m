@@ -1,4 +1,4 @@
-function [W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3] = weightsToMatrix(M, H1, H2, weights)
+function [W1L, B1L, W1R, B1R, W2L, B2L, W2LR, B2LR, W2R, B2R, W3, B3] = weightsToMatrix(M, H1, H2, K, weights)
 % this function takes in intput a vector of weights of the right size and 
 % express them in the form of matrices
 start_point=1;
@@ -39,11 +39,12 @@ start_point=start_point+1*H2;
 %third layer
 %%%%%%%%%%%%%%%%%%%%
 
-W3=reshape(weights(start_point:start_point+H2-1),1,H2);
-start_point=start_point+H2;
+W3=reshape(weights(start_point:start_point+K*H2-1),K,H2);
+start_point=start_point+K*H2;
 
-B3=weights(start_point);
-if start_point~=length(weights)
+B3=weights(start_point:start_point+K-1);
+start_point=start_point+K;
+if start_point-1~=length(weights)
     disp('there must be an error here');
 end
 

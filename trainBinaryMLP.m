@@ -11,7 +11,7 @@ function [ optimal_weights, logisticError ] = trainBinaryMLP( M, H1, H2, left_in
 % output : 
 % optimal_weights : well, guess...
 
-weights=initializeWeights(M,H1,H2);
+weights=initializeWeights(M,H1,H2, 1);
 weights_1=zeros(length(weights),1);
 
 % check if the labels are valid
