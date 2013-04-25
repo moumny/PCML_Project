@@ -42,12 +42,12 @@ if (~training)
 end
 
 %third layer
-r3=A3-ti;
+r3=2*(A3-ti);
 grad_W3=r3*Z2';
 grad_B3=r3;
 
 %second layer
-gp2L=Z2.*(1-1./(1+exp(-A2R)));
+gp2L=Z2.*(1-1./(1+exp(-A2L)));
 gp2LR=(1./(1+exp(-A2L))).*(1./(1+exp(-A2R)));
 gp2R=Z2.*(1-1./(1+exp(-A2R)));
 
