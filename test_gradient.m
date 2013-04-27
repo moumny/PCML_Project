@@ -3,8 +3,8 @@
 
 % We choose an MLP size
 M=4; % input's size (Dimension?)
-H1=3;
-H2=2;
+H1=10;
+H2=10;
 K=5;
 XL=randn(M,1);%random input
 XR=randn(M,1);
@@ -38,9 +38,9 @@ for i=1:length(weights)
     else
         aWplusD=kmlp(M,H1,H2,K,XL,XR,weights+d,false,0);
         aWminusD=kmlp(M,H1,H2,K,XL,XR,weights-d,false,0);
-        % calculate error function
-        EWplusD=sum((aWplusD-ti).^2);
-        EWminusD=sum((aWminusD-ti).^2);
+        % calculmlpate error function
+        EWplusD=norm(aWplusD-ti);
+        EWminusD=norm(aWminusD-ti);
     end
     approximated_gradient(i)=(EWplusD-EWminusD)/(2*epsilon);
 end

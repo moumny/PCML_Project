@@ -15,7 +15,7 @@ weights=initializeWeights(M,H1,H2,K);
 weights_1=zeros(length(weights),1);
 
 % Create target values 
-targets = zeros(K,size(labels,2)); %maybe -1 instead of 0 ?
+targets = zeros(K,size(labels,2)); %maybe -1 instead of 0 ? no. maybe normalize?
 for i=1:size(labels)
     targets(labels(i)+1,i)=1;
 end
@@ -45,7 +45,7 @@ while early_stopping == false  & epoch < 100
     num = zeros(1,size(left_valid_norm,2));
     for i=1:size(left_valid_norm,2)
         [output,~]=kmlp(M,H1,H2,K, left_valid_norm(:,i),right_valid_norm(:,i),weights,false,0);
-        error = error + sum((output-cat_valid(i)).^2); 
+        error = error + norm(output-cat_valid(i)); 
 %         num(i)=cat_valid(i)*output;
     end
 %     size(find(num>0))
