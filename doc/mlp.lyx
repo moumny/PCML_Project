@@ -268,7 +268,7 @@ The goal is the minimize
 \begin_layout Standard
 \begin_inset Formula 
 \[
-r_{q}^{(3)}=\frac{\partial E_{i}}{\partial a_{q}^{(3)}}=a_{q}^{(3)}-\tilde{\boldsymbol{t}_{q}},\; q=1,...,K
+r_{q}^{(3)}=\frac{\partial E_{i}}{\partial a_{q}^{(3)}}=\frac{a_{q}^{(3)}-\tilde{\boldsymbol{t}_{q}}}{\left\Vert \boldsymbol{a}^{(3)}(\boldsymbol{x}_{i})-\tilde{\boldsymbol{t}_{i}}\right\Vert },\; q=1,...,K
 \]
 
 \end_inset
@@ -279,7 +279,7 @@ r_{q}^{(3)}=\frac{\partial E_{i}}{\partial a_{q}^{(3)}}=a_{q}^{(3)}-\tilde{\bold
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\boldsymbol{r}^{(3)}=[r_{q}^{(3)}]=\boldsymbol{a}^{(3)}-\tilde{\boldsymbol{t}}
+\boldsymbol{r}^{(3)}=[r_{q}^{(3)}]=\frac{\boldsymbol{a}^{(3)}-\tilde{\boldsymbol{t}}}{\left\Vert \boldsymbol{a}^{(3)}-\tilde{\boldsymbol{t}}\right\Vert }
 \]
 
 \end_inset
