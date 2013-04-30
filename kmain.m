@@ -1,6 +1,6 @@
 %% compute a multi class training
 load(['datasets' filesep 'norb_5class']);
-train_cat_s=double(train_cat_s); % change 1 and 3 to -1 and 1
+train_cat_s=double(train_cat_s); 
 train_left_s=double(train_left_s);
 train_right_s=double(train_right_s);
 
