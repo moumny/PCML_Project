@@ -9,13 +9,15 @@ if (use_truck_and_car)
     load(['datasets' filesep 'norb_binary_truckcar']);
     train_cat_s=double(2*train_cat_s-7); % change 1 and 3 to -1 and 1
     test_cat_s=double(2*test_cat_s-7);
+    train_left_s=double(train_left_s);
+    train_right_s=double(train_right_s);
 else
     load(['datasets' filesep 'norb_binary']);
-    train_cat_s=double(train_cat_s-2); % change 1 and 3 to -1 and 1
+    train_cat_s=double(train_cat_s-7); % change 1 and 3 to -1 and 1
     test_cat_s=double(test_cat_s-2);
+    train_left_s=double(train_left_s);
+    train_right_s=double(train_right_s);
 end
-train_left_s=double(train_left_s);
-train_right_s=double(train_right_s);
 
 
 M=576;

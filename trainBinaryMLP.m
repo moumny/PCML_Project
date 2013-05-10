@@ -1,4 +1,4 @@
-function [ optimal_weights, logisticError ] = trainBinaryMLP( M, H1, H2, left_inputs, right_inputs, labels, momentum )
+function [ optimal_weights, logisticError, mu_and_sigmas] = trainBinaryMLP( M, H1, H2, left_inputs, right_inputs, labels, momentum )
 % This function train the mlp for binary dataset
 % inputs : 
 % M : size of inputs
@@ -10,6 +10,8 @@ function [ optimal_weights, logisticError ] = trainBinaryMLP( M, H1, H2, left_in
 %  Momentum : the momentum for gradient descent
 % output : 
 % optimal_weights : well, guess...
+% logistic_error : the error on the validation set through time
+% mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right]
 
 weights=initializeWeights(M,H1,H2, 1);
 weights_1=zeros(length(weights),1);
@@ -19,17 +21,22 @@ if (find(labels~=1 & labels~=-1))
     disp('error in training of the binary mlp. The labels vectors must be composed of -1 and 1');
     return;
 end
+targets=labels;
 
-[left_train,right_train,cat_train,left_valid,right_valid,cat_valid] = splitTrainSet(left_inputs, right_inputs, labels); 
-left_train_norm = normalize(left_train);
-right_train_norm = normalize(right_train);
-left_valid_norm = normalize(left_valid);
-right_valid_norm = normalize(right_valid);
+%Split the train set and normalize
+[left_train,right_train,cat_train,left_valid,right_valid,cat_valid] = splitTrainSet(left_inputs, right_inputs, targets); 
+[left_train_norm, mu_left, sigma_left]  = normalize(left_train);
+[right_train_norm, mu_right, sigma_right] = normalize(right_train);
+left_valid_norm = normalize(left_valid, mu_left, sigma_left);
+right_valid_norm = normalize(right_valid, mu_right, sigma_right);
+
+% return mus and sigma in order to use it on the test set, later
+mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right];
 
 logisticError = [];
 early_stopping = false;
 epoch=1;
-while early_stopping == false  & epoch < 100 
+while early_stopping == false  & epoch < 30 
     %train
     for i=randperm(size(left_train_norm,2))
         [~,gradient]=mlp(M,H1,H2,left_train_norm(:,i),right_train_norm(:,i),weights,true,cat_train(i));
@@ -50,7 +57,7 @@ while early_stopping == false  & epoch < 100
     
     logisticError = [logisticError (error/size(left_valid,2))];
 
-    if epoch > 2
+    if epoch > 10
         early_stopping = logisticError(end) >= logisticError(end-1);
     end
     

@@ -43,7 +43,7 @@ end
 
 %third layer
 %r3=2*(A3-ti);
-r3=(A3-ti)/norm(A3-ti);
+r3=2*(A3-ti);
 grad_W3=r3*Z2';
 grad_B3=r3;
 

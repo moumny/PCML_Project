@@ -27,12 +27,8 @@ end
 [left_train,right_train,cat_train,left_valid,right_valid,cat_valid] = splitTrainSet(left_inputs, right_inputs, targets); 
 [left_train_norm, mu_left, sigma_left]  = normalize(left_train);
 [right_train_norm, mu_right, sigma_right] = normalize(right_train);
-left_valid_norm = normalize(left_valid, mu_left, sigma_left);
-right_valid_norm = normalize(right_valid, mu_right, sigma_right);
-
-% return mus and sigma in order to use it on the test set, later
-mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right];
-
+left_valid_norm = normalize(left_valid);
+right_valid_norm = normalize(right_valid);
 
 validationError = [];
 early_stopping = false;
@@ -58,7 +54,7 @@ while early_stopping == false  & epoch < 100
     
     validationError = [validationError (error/size(left_valid,2))];
 
-    if epoch > 10
+    if epoch > 30
         early_stopping = validationError(end) > validationError(end-1);
     end
     
