@@ -4,7 +4,7 @@ function [actL, actR, actC, validL, validR, validC] = splitTrainSet( trainL, tra
 %   training set
 
 N = size(trainL,2);
-V = floor(size(trainL,2)/3);
+V = floor(N/3);
 
 perm = randperm(N);
 

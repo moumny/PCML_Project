@@ -5,8 +5,8 @@ train_left_s=double(train_left_s);
 train_right_s=double(train_right_s);
 
 M=576;
-H1=5;
-H2=5;
+H1=30;
+H2=10;
 K=5;
 momentum=0;
 minibatch=1;

@@ -3,8 +3,8 @@
 
 % We choose an MLP size
 M=4; % input's size (Dimension?)
-H1=10;
-H2=10;
+H1=18;
+H2=9;
 K=5;
 XL=randn(M,1);%random input
 XR=randn(M,1);
@@ -20,7 +20,7 @@ if  K==1
     [output, gradient]=mlp(M,H1,H2,XL,XR,weights,true,ti);
 else
     ti=zeros(K,1);
-    ti(2)=1;
+    ti(4)=1;
     [output, gradient]=kmlp(M,H1,H2,K,XL,XR,weights,true,ti);
     
 end

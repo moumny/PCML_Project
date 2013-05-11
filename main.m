@@ -19,13 +19,13 @@ train_right_s=double(train_right_s);
 
 
 M=576;
-H1=5;
-H2=6;
+H1=3;
+H2=2;
 K=1;
-momentum=0;
+momentum=0.2;
 minibatch=1;
 
-[optimal_weights, error,mu_and_sigmas]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,momentum);
+[optimal_weights, error, mu_and_sigmas]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,momentum);
 
 plot(error);
 

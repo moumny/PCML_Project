@@ -33,18 +33,22 @@ right_valid_norm = normalize(right_valid, mu_right, sigma_right);
 % return mus and sigma in order to use it on the test set, later
 mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right];
 
-logisticError = [];
+logisticError = zeros(1,50);
 early_stopping = false;
 epoch=1;
-while early_stopping == false  & epoch < 30 
+
+%learning rate
+lr= 0.01;
+
+while early_stopping == false  & epoch < 51 
     %train
     for i=randperm(size(left_train_norm,2))
         [~,gradient]=mlp(M,H1,H2,left_train_norm(:,i),right_train_norm(:,i),weights,true,cat_train(i));
-        weights_new=weights - 1/i*(1-momentum)*gradient + momentum*(weights-weights_1);
+        weights_new=weights - lr*(1-momentum)*gradient + momentum*(weights-weights_1);
         weights_1=weights;
         weights=weights_new;
     end
-    
+    %lr=lr/1.2;
     %Compute error
     error = 0;
     num = zeros(1,size(left_valid_norm,2));
@@ -55,14 +59,16 @@ while early_stopping == false  & epoch < 30
     end
     size(find(num>0))
     
-    logisticError = [logisticError (error/size(left_valid,2))];
+    logisticError(epoch)= error/size(left_valid,2);
 
-    if epoch > 10
-        early_stopping = logisticError(end) >= logisticError(end-1);
-    end
+%     if epoch > 10
+%         early_stopping = logisticError(end) >= logisticError(end-1);
+%     end
     
     epoch = epoch + 1
 end
+
+
 optimal_weights=weights;
 
 end
