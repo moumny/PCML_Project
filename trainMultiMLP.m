@@ -35,19 +35,27 @@ mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right];
 
 
 validationError = [];
+
+%parameters for early stoping
 early_stopping = false;
+sliding_window=5;
+mean_on_W_epocks=Inf;
+last_good_weight=0;
+
+
 epoch=1;
 
 %learning rate
-lr=0.001;
+lr=0.01;
 
-while early_stopping == false  & epoch < 100 
+while ( early_stopping == false  && epoch < 50 )
     %train
     for i=randperm(size(left_train_norm,2))
         [~,gradient]=kmlp(M,H1,H2, K, left_train_norm(:,i),right_train_norm(:,i),weights,true,cat_train(:,i));
         weights_new=weights - lr*(1-momentum)*gradient + momentum*(weights-weights_1);
         weights_1=weights;
         weights=weights_new;
+       % lr=lr+1;
     end
     
     %Compute error
@@ -64,16 +72,24 @@ while early_stopping == false  & epoch < 100
         if (class_max==true_max)
             num(i)=1;
         end
-    end
-    size(find(num>0))
-    
+    end    
     validationError = [validationError (error/size(left_valid,2))];
+    disp(strcat('epoch : ',num2str(epoch),',~ ',num2str(size(find(num>0),2)),' are correctly classified on the validation set (total=',num2str(length(num)),')'));
 
-    if epoch > 20
-        early_stopping = validationError(end) > validationError(end-1);
+    if (mod(epoch,sliding_window)==0)
+        % if the mean on 5 epocks seems higher than last time
+        mean_on_W_epocks_new=mean(validationError(end-sliding_window+1:end));
+        disp(strcat('average error on the last ',num2str(sliding_window),' epocks : ',num2str(mean_on_W_epocks_new)));
+        if (mean_on_W_epocks_new>0.8*mean_on_W_epocks)
+            early_stopping=true;
+            weights=last_good_weight;
+            disp('early stopping');
+        else
+            last_good_weight=weights;
+            mean_on_W_epocks=mean_on_W_epocks_new;
+        end
     end
-    
-    epoch = epoch + 1
+    epoch = epoch + 1;
 end
 optimal_weights=weights;
 
