@@ -39,8 +39,8 @@ for i=1:length(weights)
         aWplusD=kmlp(M,H1,H2,K,XL,XR,weights+d,false,0);
         aWminusD=kmlp(M,H1,H2,K,XL,XR,weights-d,false,0);
         % calculmlpate error function
-        EWplusD=norm(aWplusD-ti);
-        EWminusD=norm(aWminusD-ti);
+        EWplusD=norm(aWplusD-ti).^2;
+        EWminusD=norm(aWminusD-ti).^2;
     end
     approximated_gradient(i)=(EWplusD-EWminusD)/(2*epsilon);
 end
