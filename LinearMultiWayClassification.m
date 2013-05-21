@@ -89,7 +89,7 @@ sub_train_x=perm_train_x(:, (cesure+1):end);
 sub_train_t=perm_train_t(:, (cesure+1):end);
 % we will make a gradient descent, we initialize our W coefficient with
 % random values
-W_logistic=randn(5,size(sub_train_x,1))/5;
+W_logistic=randn(5,size(sub_train_x,1))/sqrt(size(sub_train_x,1));
 converged=false;
 k=50;
 previous_error_on_validationset=Inf;
@@ -114,7 +114,7 @@ while(~converged)
         previous_error_on_validationset=sum(errors);
     end
 end
-
+previous_error_on_validationset
 %% Then we test the obtained solutions on the test set
 count_squared_error=0;
 count_tichonov=0;
