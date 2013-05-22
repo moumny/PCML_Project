@@ -25,6 +25,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -47,7 +48,7 @@
 \paragraph_separation indent
 \paragraph_indentation default
 \quotes_language english
-\papercolumns 1
+\papercolumns 2
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
@@ -59,15 +60,23 @@
 
 \begin_body
 
-\begin_layout Part
-Multiclass MLP classification
+\begin_layout Section
+Introduction
 \end_layout
 
 \begin_layout Section
-Forward pass
+MLP for binary classification
 \end_layout
 
 \begin_layout Subsection
+Inplementing the gradient descent 
+\end_layout
+
+\begin_layout Subsubsection
+Forward pass
+\end_layout
+
+\begin_layout Paragraph
 First Layer
 \end_layout
 
@@ -117,7 +126,7 @@ Or in a more compact way:
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Second Layer
 \end_layout
 
@@ -210,7 +219,7 @@ And,
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Third Layer
 \end_layout
 
@@ -236,11 +245,87 @@ a_{q}^{(3)}=\mathbf{\boldsymbol{(w}}_{q}^{(3)})^{T}\cdot\boldsymbol{z}^{(2)}+b_{
 
 \end_layout
 
-\begin_layout Section
-Backward pass
+\begin_layout Subsection
+backward pass
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Subsection
+Results 
+\end_layout
+
+\begin_layout Standard
+(EXTREMELY good results on validation set, training set too easy)
+\end_layout
+
+\begin_layout Subsection
+Extrapolation 
+\end_layout
+
+\begin_layout Standard
+(creation of another binary test)
+\end_layout
+
+\begin_layout Section
+Multi-way classification
+\end_layout
+
+\begin_layout Subsection
+Linear multi-way classification
+\end_layout
+
+\begin_layout Standard
+(squared error, tichinov regularizer, logistic error)
+\end_layout
+
+\begin_layout Subsection
+How to deal multis way with MLP?
+\end_layout
+
+\begin_layout Subsection
+Computation of gradient 
+\end_layout
+
+\begin_layout Subsubsection
+Forward pass
+\end_layout
+
+\begin_layout Standard
+The first and second layer or the forward bass are exactly the same as in
+ the binary case.
+ Only change the third laye r : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+a_{q}^{(3)}=\mathbf{\boldsymbol{(w}}_{q}^{(3)})^{T}\cdot\boldsymbol{z}^{(2)}+b_{q}^{(3)},\; q=1,...,K
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\boldsymbol{a}^{(3)}=\mathbf{W}^{(3)}\cdot\boldsymbol{z}^{(2)}+\boldsymbol{b}^{(3)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Backward pass
+\end_layout
+
+\begin_layout Paragraph
 Third Layer
 \end_layout
 
@@ -301,12 +386,8 @@ r_{q}^{(3)}=\frac{\partial E_{i}}{\partial a_{q}^{(3)}}=2(a_{q}^{(3)}-\tilde{\bo
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Second Layer
-\end_layout
-
-\begin_layout Subsubsection
-Residuals
 \end_layout
 
 \begin_layout Standard
@@ -345,10 +426,6 @@ Vectorizing gives:
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection
-Gradients
 \end_layout
 
 \begin_layout Standard
@@ -419,12 +496,8 @@ And for
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 First Layer
-\end_layout
-
-\begin_layout Subsubsection
-Residuals
 \end_layout
 
 \begin_layout Standard
@@ -543,10 +616,6 @@ In summary after vectorization we have:
 
 \end_layout
 
-\begin_layout Subsubsection
-Gradients
-\end_layout
-
 \begin_layout Standard
 Now that we have computed the residual variables, we can easily find the
  gradients for the first layer.
@@ -587,6 +656,18 @@ And,
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Results and optimization
+\end_layout
+
+\begin_layout Subsection
+Discussion
+\end_layout
+
+\begin_layout Section
+Conclusion
 \end_layout
 
 \end_body

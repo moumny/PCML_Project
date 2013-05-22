@@ -6,10 +6,10 @@ train_right_s=double(train_right_s);
 
 M=576;
 K=5;
-H1=8;
-H2=2;
+H1=15;
+H2=8;
 momentum=0.5;
-learning_rate=0.01;
+learning_rate=0.001;
 
 [optimal_weights, error, mu_and_sigmas]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
 
