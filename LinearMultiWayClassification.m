@@ -94,7 +94,7 @@ converged=false;
 k=50;
 previous_error_on_validationset=Inf;
 count=0;
-while(~converged)
+while(~converged || count<50)
     count=count+1;
     disp(strcat('epock ',num2str(count)));
    for i=1:size(sub_train_x,2)

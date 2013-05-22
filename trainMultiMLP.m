@@ -1,4 +1,4 @@
-function [ optimal_weights, validationError, mu_and_sigmas] = trainMultiMLP( M, H1, H2, K, left_inputs, right_inputs, labels, learning_rate, momentum )
+function [ optimal_weights, validationError, mu_and_sigmas, misclass] = trainMultiMLP( M, H1, H2, K, left_inputs, right_inputs, labels, learning_rate, momentum )
 % This function train the mlp for binary dataset
 % inputs : 
 % M : size of inputs
@@ -48,6 +48,9 @@ epoch=1;
 %learning rate
 lr=learning_rate;
 
+%missclassification on validation set (output)
+misclass=size(left_valid,2);
+
 while ( early_stopping == false  && epoch < 50 )
     %train
     for i=randperm(size(left_train_norm,2))
@@ -75,7 +78,9 @@ while ( early_stopping == false  && epoch < 50 )
     end    
     validationError = [validationError (error/size(left_valid,2))];
     disp(strcat('epoch : ',num2str(epoch),',~ ',num2str(size(find(num>0),2)),' are correctly classified on the validation set (total=',num2str(length(num)),')'));
-
+    
+    new_misclass=size(left_valid,2)-size(find(num>0),2);
+    
     % every $(sliding_window) epochs, determine if early stopping 
     if (mod(epoch,sliding_window)==0)
         % if the mean on 5 epocks seems higher than last time
@@ -88,6 +93,7 @@ while ( early_stopping == false  && epoch < 50 )
         else
             last_good_weight=weights;
             mean_on_W_epocks=mean_on_W_epocks_new;
+            misclass=new_misclass;
         end
     end
     epoch = epoch + 1;

@@ -6,12 +6,12 @@ train_right_s=double(train_right_s);
 
 M=576;
 K=5;
-H1=12;
-H2=8;
-momentum=0.1;
+H1=8;
+H2=2;
+momentum=0.5;
 learning_rate=0.01;
 
-[optimal_weights, error, mu_and_sigmas]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,momentum);
+[optimal_weights, error, mu_and_sigmas]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
 
 plot(error);
 
