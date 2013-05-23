@@ -4,12 +4,30 @@ train_cat_s=double(train_cat_s);
 train_left_s=double(train_left_s);
 train_right_s=double(train_right_s);
 
+% % this part is for the additional dataset 
+% load(['facult_dataset' filesep 'training_cat']);
+% train_cat_s=double(training_cat);
+% load(['facult_dataset' filesep 'training_set_left']);
+% train_left_s=double(training_set_left);
+% load(['facult_dataset' filesep 'training_set_right']);
+% train_right_s=double(training_set_right);
+% 
+% load(['facult_dataset' filesep 'testing_cat']);
+% test_cat_s=double(testing_cat);
+% load(['facult_dataset' filesep 'testing_set_left']);
+% test_left_s=double(testing_set_left);
+% load(['facult_dataset' filesep 'testing_set_right']);
+% test_right_s=double(testing_set_right);
+
+%%
+
+
 M=576;
 K=5;
-H1=15;
-H2=8;
-momentum=0.5;
-learning_rate=0.001;
+H1=60;
+H2=40;
+momentum=0.05;
+learning_rate=0.01;
 
 [optimal_weights, error, mu_and_sigmas]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
 

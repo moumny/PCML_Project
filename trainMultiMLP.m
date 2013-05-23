@@ -38,7 +38,7 @@ validationError = [];
 
 %parameters for early stoping
 early_stopping = false;
-sliding_window=5;
+sliding_window=4;
 mean_on_W_epocks=Inf;
 last_good_weight=0;
 
@@ -86,7 +86,7 @@ while ( early_stopping == false  && epoch < 50 )
         % if the mean on 5 epocks seems higher than last time
         mean_on_W_epocks_new=mean(validationError(end-sliding_window+1:end));
         disp(strcat('average error on the last ',num2str(sliding_window),' epochs : ',num2str(mean_on_W_epocks_new)));
-        if (mean_on_W_epocks_new>0.9*mean_on_W_epocks)
+        if (mean_on_W_epocks_new>0.95*mean_on_W_epocks)
             early_stopping=true;
             weights=last_good_weight;
             disp('early stopping');
