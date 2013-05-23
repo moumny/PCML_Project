@@ -2,3 +2,4 @@
 *.m~
 ~*
 *.lyx~
+.DS_STORE
