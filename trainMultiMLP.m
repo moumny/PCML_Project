@@ -1,4 +1,4 @@
-function [ optimal_weights, validationError, mu_and_sigmas, misclass] = trainMultiMLP( M, H1, H2, K, left_inputs, right_inputs, labels, learning_rate, momentum )
+function [ optimal_weights, validationError, mu_and_sigmas, misclass, missclass_vector, training_error_vector] = trainMultiMLP( M, H1, H2, K, left_inputs, right_inputs, labels, learning_rate, momentum )
 % This function train the mlp for binary dataset
 % inputs : 
 % M : size of inputs
@@ -15,6 +15,7 @@ function [ optimal_weights, validationError, mu_and_sigmas, misclass] = trainMul
 
 weights=initializeWeights(M,H1,H2,K);
 weights_1=zeros(length(weights),1);
+training_error_vector=[];
 
 % Create target values 
 targets = zeros(K,size(labels,2)); %maybe -1 instead of 0 ? no. maybe normalize?
@@ -61,7 +62,7 @@ while ( early_stopping == false  && epoch < 50 )
        % lr=lr+1;
     end
     
-    %Compute error
+    %Compute error on validation set 
     error = 0;
     num = zeros(1,size(left_valid_norm,2));
     for i=1:size(left_valid_norm,2)

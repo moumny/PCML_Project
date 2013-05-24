@@ -91,10 +91,10 @@ sub_train_t=perm_train_t(:, (cesure+1):end);
 % random values
 W_logistic=randn(5,size(sub_train_x,1))/sqrt(size(sub_train_x,1));
 converged=false;
-k=50;
+k=200;
 previous_error_on_validationset=Inf;
 count=0;
-while(~converged || count<50)
+while(~converged)
     count=count+1;
     disp(strcat('epock ',num2str(count)));
    for i=1:size(sub_train_x,2)
@@ -108,7 +108,8 @@ while(~converged || count<50)
    % now we compute the error on the validation set 
     lsexp_y=log(sum(exp(W_logistic*valid_train_x),1));
     errors=lsexp_y-sum(valid_train_t.*(W_logistic*valid_train_x));
-    if(sum(errors)>previous_error_on_validationset)
+    
+    if(sum(errors)>previous_error_on_validationset*0.95)
         converged=true;
     else
         previous_error_on_validationset=sum(errors);

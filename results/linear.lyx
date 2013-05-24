@@ -1,0 +1,347 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Multi way linear classifier
+\end_layout
+
+\begin_layout Standard
+In order to compare our MLP implementation for multi way classification,
+ we have implemented 3 linear classifiers.
+ Each one of them does a linear prediction : 
+\end_layout
+
+\begin_layout Subsection
+Linear regression with squared error
+\end_layout
+
+\begin_layout Standard
+For this part, each datapoint belongs to one of 5 class.
+ Thus, the label attributed for each datapoint is no more a scalar but a
+ binary 5-dimensinal vector.
+ For example if 
+\begin_inset Formula $x$
+\end_inset
+
+ belongs to the class number 2, its label will be 
+\begin_inset Formula $\widetilde{t_{i}}=[0,1,0,0,0]$
+\end_inset
+
+.
+ Let consider the classification error on the training set to be : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{2}(W)=\sum_{i=1}^{N}\left\Vert y_{i}-\tilde{t}_{i}\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The linear classifier computes the 5-dimensional output : 
+\begin_inset Formula $y_{i}=W[x_{i};1]$
+\end_inset
+
+ (we had a constant coordinate in each datapoints in order to incorporate
+ the bias in the matrix W).
+ Then the class is determined by 
+\begin_inset Formula $argmax_{j}y_{i}(j)$
+\end_inset
+
+.
+ In the case of the squared error above, the course shows that the matrix
+ W that optimizes the regression on the training set is given by : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $W_{optimal}=(\Phi^{T}\Phi)^{-1}\Phi T$
+\end_inset
+
+ where 
+\begin_inset Formula $\Phi$
+\end_inset
+
+is a matrix where each column is a datapoint, and 
+\begin_inset Formula $T$
+\end_inset
+
+ is the the matrix that regroup the corresponding labels.
+ 
+\end_layout
+
+\begin_layout Standard
+By computing this classifier, we obtain 1228 misclassified elements on the
+ test set (over a total of 5400 datapoints), which means an accuracy of
+ 77%.
+ 
+\end_layout
+
+\begin_layout Subsection
+Squared error with Tichonov regularizer
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:section_tichonov"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A classic improvement of linear regression is to constrain the weights using
+ a tichonov regularizer.
+ The error is now : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{2}(W)=\frac{1}{2}\sum_{i=1}^{N}\left\Vert y_{i}-\tilde{t}_{i}\right\Vert ^{2}+\frac{\nu}{2}\left\Vert W\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this case, for a fixed 
+\begin_inset Formula $\nu$
+\end_inset
+
+, the course gives us the optimal weights for the regression on the training
+ set (using the same notation introduced above) :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+W_{tichonov}=(\Phi^{T}\Phi+\nu I)^{-1}\Phi^{T}T
+\]
+
+\end_inset
+
+In order to find the best regularizer 
+\begin_inset Formula $\nu$
+\end_inset
+
+, we compute a 10-folds cross validation on the training set, for different
+ values of 
+\begin_inset Formula $\nu$
+\end_inset
+
+.
+ We have selected the regularizer that minimizes the risk, which is computed
+ as follow : after splitting the training set in 10 equals parts, 
+\begin_inset Formula $risk=\frac{1}{10}\sum_{m=1}^{10}R^{(-m)}(W^{(-m)})$
+\end_inset
+
+, where 
+\begin_inset Formula $R^{(-m)}$
+\end_inset
+
+is the error 
+\begin_inset Formula $E_{2}$
+\end_inset
+
+computed only of the 
+\begin_inset Formula $m^{th}$
+\end_inset
+
+part of the classifier trained with the 9 other parts of the training set.
+ 
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:tichonov_optimization"
+
+\end_inset
+
+ shows the evolution of the risk with 
+\begin_inset Formula $\nu$
+\end_inset
+
+.
+ Since minimum is obtained for 
+\begin_inset Formula $\nu\approx400$
+\end_inset
+
+, we have take this value to build the regularized classifier.
+ This one makes a good result on the test set, with only 817 misclassified
+ elements (85% accuracy).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename tichnov.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:tichonov_optimization"
+
+\end_inset
+
+Evolution of the risk (defined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:section_tichonov"
+
+\end_inset
+
+) with the tichonov regularizer.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Logistic regression
+\end_layout
+
+\begin_layout Standard
+Another improvement is to consider a logistic error : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{log}(W)=\frac{1}{2}\sum_{i=1}^{N}\mbox{lsexp}(y(x_{i}))-\tilde{t_{i}^{T}}y(x_{i})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There is no analytic solution of this kind of error.
+ We are forced to implement a gradient descent.
+ The course p.
+ 145 gives the value of the gradient : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{y_{i}}E_{i}=\sigma(y_{i})-\tilde{t_{i}}=[\frac{e^{y_{i}(k)}}{\sum_{k}e^{(k)}}]_{k=1...5}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For early stopping, we have simply taken a validation set of 1/3 of the
+ whole training set.
+ Early stopping is triggered whenever the error on the validation does not
+ decrease significantly (
+\begin_inset Formula $error(epoch)>0.95*error(epoch-1)$
+\end_inset
+
+) The learning rate is 0.005.
+ After launching the training of this classifier 10 times, we observe an
+ average missclassification of 1009 elements on the test set (with a standard
+ deviation of 55 elements).
+ 
+\end_layout
+
+\end_body
+\end_document
