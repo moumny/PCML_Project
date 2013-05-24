@@ -1,4 +1,4 @@
-function [ optimal_weights, logisticError, mu_and_sigmas] = trainBinaryMLP( M, H1, H2, left_inputs, right_inputs, labels, momentum )
+function [ optimal_weights, logisticError, mu_and_sigmas, misclass, missclass_vector, training_error] = trainBinaryMLP( M, H1, H2, left_inputs, right_inputs, labels, learning_rate,momentum )
 % This function train the mlp for binary dataset
 % inputs : 
 % M : size of inputs
@@ -16,6 +16,8 @@ function [ optimal_weights, logisticError, mu_and_sigmas] = trainBinaryMLP( M, H
 weights=initializeWeights(M,H1,H2, 1);
 weights_1=zeros(length(weights),1);
 
+misclass=0;
+
 % check if the labels are valid
 if (find(labels~=1 & labels~=-1))
     disp('error in training of the binary mlp. The labels vectors must be composed of -1 and 1');
@@ -32,15 +34,16 @@ right_valid_norm = normalize(right_valid, mu_right, sigma_right);
 
 % return mus and sigma in order to use it on the test set, later
 mu_and_sigmas=[mu_left, sigma_left, mu_right, sigma_right];
-
-logisticError = zeros(1,50);
+missclass_vector=[];
+training_error=[];
+logisticError = zeros(1,20);
 early_stopping = false;
 epoch=1;
 
 %learning rate
-lr= 0.01;
+lr= learning_rate;
 
-while early_stopping == false  & epoch < 51 
+while early_stopping == false  & epoch < 21
     %train
     for i=randperm(size(left_train_norm,2))
         [~,gradient]=mlp(M,H1,H2,left_train_norm(:,i),right_train_norm(:,i),weights,true,cat_train(i));
@@ -60,6 +63,25 @@ while early_stopping == false  & epoch < 51
     size(find(num>0))
     
     logisticError(epoch)= error/size(left_valid,2);
+    missclass_vector=[missclass_vector, size(find(num>0),2)];
+    % made for report : compute error on training set 
+        %Compute error on validation set 
+    error = 0;
+    num = zeros(1,size(left_train_norm,2));
+    for i=1:size(left_train_norm,2)
+        [output,~]=mlp(M,H1,H2, left_train_norm(:,i),right_train_norm(:,i),weights,false,0);
+        error = error +sum( (output-cat_train(:,i)).^2); 
+        % this is used to count the number of well classified point on the
+        % validation set
+        [~, class_max]=max(output);
+        [~, true_max]=max(cat_train(:,i));
+        num(i)=-1;
+        if (class_max==true_max)
+            num(i)=1;
+        end
+    end    
+    training_error = [training_error (error/size(left_train,2))];
+
 
 %     if epoch > 10
 %         early_stopping = logisticError(end) >= logisticError(end-1);

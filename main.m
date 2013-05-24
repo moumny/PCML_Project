@@ -19,15 +19,19 @@ train_right_s=double(train_right_s);
 
 
 M=576;
-H1=3;
-H2=2;
+H1=10;
+H2=5;
 K=1;
-momentum=0.2;
-minibatch=1;
+momentum=0.5;
+learning_rate=0.001;
 
-[optimal_weights, error, mu_and_sigmas]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,momentum);
-
-plot(error);
+[optimal_weights, error, mu_and_sigmas, missclass, misclassvector, training_error]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
+[haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), 1800-misclassvector);
+axes(haxes(1))
+ylabel('Errors on validation and training set')
+axes(haxes(2))
+ylabel('elements')
+legend('correctly classified on val. set','error on training set','error on validation set');
 
 %% test the classifier obtained with the optimal weights on the test set
 test_left_norm=normalize(double(test_left_s), mu_and_sigmas(:,1), mu_and_sigmas(:,2));

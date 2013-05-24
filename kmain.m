@@ -49,6 +49,7 @@ test_left_norm=normalize(double(test_left_s), mu_and_sigmas(:,1), mu_and_sigmas(
 test_right_norm=normalize(double(test_right_s), mu_and_sigmas(:,3), mu_and_sigmas(:,4));
 
 mauvais_exemples=zeros(576,3);
+count_
 
 count_error=0;
 confusion_matrix=zeros(5);
