@@ -37,9 +37,11 @@ z=1;
 [optimal_weights, error, mu_and_sigmas, missclass, misclassvector, training_error]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
 [haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), 1800-misclassvector);
 axes(haxes(1))
-ylabel('Semilog Plot')
+ylabel('Errors on validation and training set')
 axes(haxes(2))
-ylabel('Linear Plot')
+ylabel('elements')
+legend('correctly classified on val. set','error on training set','error on validation set');
+
 
 
 %% test the classifier obtained with the optimal weights on the test set
