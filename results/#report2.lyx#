@@ -349,8 +349,9 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename optimizationH12.pdf
-	scale 50
+	filename tichnov.pdf
+	width 100text%
+	BoundingBox 0bp 100bp 415bp 168bp
 
 \end_inset
 
