@@ -64,22 +64,16 @@ while early_stopping == false  & epoch < 21
     
     logisticError(epoch)= error/size(left_valid,2);
     missclass_vector=[missclass_vector, size(find(num>0),2)];
+    
     % made for report : compute error on training set 
         %Compute error on validation set 
     error = 0;
     num = zeros(1,size(left_train_norm,2));
     for i=1:size(left_train_norm,2)
-        [output,~]=mlp(M,H1,H2, left_train_norm(:,i),right_train_norm(:,i),weights,false,0);
-        error = error +sum( (output-cat_train(:,i)).^2); 
-        % this is used to count the number of well classified point on the
-        % validation set
-        [~, class_max]=max(output);
-        [~, true_max]=max(cat_train(:,i));
-        num(i)=-1;
-        if (class_max==true_max)
-            num(i)=1;
-        end
-    end    
+        [output,~]=mlp(M,H1,H2,left_train_norm(:,i),right_train_norm(:,i),weights,false,0);
+        error = error + accuLog(-cat_train(i)*output); 
+        num(i)=cat_train(i)*output;
+    end
     training_error = [training_error (error/size(left_train,2))];
 
 

@@ -26,7 +26,7 @@ momentum=0.5;
 learning_rate=0.001;
 
 [optimal_weights, error, mu_and_sigmas, missclass, misclassvector, training_error]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
-[haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), 1800-misclassvector);
+[haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), misclassvector);
 axes(haxes(1))
 ylabel('Errors on validation and training set')
 axes(haxes(2))
