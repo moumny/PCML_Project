@@ -106,7 +106,8 @@ Normalization
 \begin_layout Standard
 We use the normalization procedure as described in the project guidelines.
  We normalize the validation set and save the mean and variance.
- These values are used to normalize the validation set et
+ These values are used to normalize the validation set and test set.
+ 
 \end_layout
 
 \begin_layout Subsection
