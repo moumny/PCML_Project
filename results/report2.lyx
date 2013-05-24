@@ -28,7 +28,7 @@
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_amsmath 1
 \use_esint 1
 \use_mhchem 1
@@ -43,10 +43,10 @@
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 0.7in
-\topmargin 1in
-\rightmargin 0.7in
-\bottommargin 1in
+\leftmargin 1in
+\topmargin 1.2in
+\rightmargin 1in
+\bottommargin 1.2in
 \columnsep 0.1in
 \secnumdepth 3
 \tocdepth 3
@@ -78,12 +78,12 @@ The goal of this project is to implement and train a multilayer perceptron
  to classify images from the small NORB dataset.
  The dataset has 10'800 images of objects in 5 different categories: four-legged
  animals, human figures, airplanes, trucks, and cars.
- The Train set contains 5400 samples while the test set contains 5400.
+ The train set contains 5400 samples while the test set contains 5400.
  In Section 1 we describe some implementation decisions and discuss the
  result for the first task (binary classification).
- Section 3 and 4 describe the implementation of the mlp for multi way classifica
-tion.
- We conclude in section 5.
+ We describe the implementation of the MLP for multi way classification
+ in section 2.
+ We conclude in section 3.
 \end_layout
 
 \begin_layout Section
@@ -93,7 +93,7 @@ Binary Classification
 \begin_layout Standard
 The first task is to implement a binary classifier using a 2-hidden layer
  perceptron with logistic error.
- the architecture of the network is described in CITATION.
+ the architecture of the network is described in the project description.
  We will first describe how we derived the gradient formulas then show the
  results.
  
@@ -120,11 +120,13 @@ After observing the evolution of the validation error after each epoch,
  not a good idea.
  Indeed the curve is highly variable during the first epochs.
  Instead we average the validation error over 4 epochs, that way, small
- fluctualtion will be ignored.
- Also given that validation error rarely goes up we decided to stop when
- the improvement becomes unsignificant to speed up the training time i.e.
+ fluctuations will be ignored.
+ Since we have never observed an overfitting effect (increasing of validation
+ error), we decided to stop when the improvement becomes insignificant to
+ speed up the training time i.e.
+ the new averaged error over 4 epochs is higher than 0.95 times the old one.
  
-\begin_inset Formula $error(epoch-3:epoch)>0.95\times error(epoch-7:epoch-4)$
+\begin_inset Formula $error(window)>0.95\times error(window-1)$
 \end_inset
 
 .
@@ -135,16 +137,17 @@ Results & Discussion
 \end_layout
 
 \begin_layout Standard
-We tried the classifier with several configuration of number of layers and
- learning rate.
- All intances are correctly classified after the first epoch with a very
- low error.
- The reason for such a good performance on the validation set is that the
- training set is very well separated.
- In this case there is not much optimization possible, as the difference
- in error in the validation is insignificant to make a decision.
- Indeed, because a logistic error is used and all the object are well classified
- the error is always close to zero.
+We tried the classifier with several configurations of number of layers
+ and learning rate.
+ We found that all instances of the validation set are correctly classified
+ after the first epoch with a very low error.
+ It seems that the two class are very easily separable, this explains this
+ good performance.
+ In this case there is not much optimization possible : since a logistic
+ error is used, increasing the weight of the last layer makes tend to 0,
+ no matters the hyper parameters.
+ Therefore we arbitrarily chose, for the following results, a learning rate
+ of 0.001 and a momentum of 0.05.
 \end_layout
 
 \begin_layout Standard
@@ -160,7 +163,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename binaryerror_h1=10_h2=5_mom=0.5_learning_rate=0.001.eps
-	width 100col%
+	width 100text%
 
 \end_inset
 
@@ -168,7 +171,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-h1=10 h2=5 mom=0.5 learning_rate=0.001
+h1=10 h2=5 mom=0.05 learning_rate=0.001
 \end_layout
 
 \end_inset
@@ -186,9 +189,10 @@ h1=10 h2=5 mom=0.5 learning_rate=0.001
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="4">
 <features tabularvalignment="middle">
@@ -298,13 +302,12 @@ New dataset
 \end_layout
 
 \begin_layout Standard
-So to check the algorithm beyond testing the gradient we made another dataset
- from the 5 class one.
+In order to verify our assumption concerning the separability of the two
+ classes, we created another dataset, using the samples of truck and cars.
  The idea is that some other classes are less separable and would allow
  us to have a better idea of the performance of our implementation.
- Indeed in this case the validation error takes a bit more time to go down
- to zero.
- 
+ We have not driven formally a study of it, but we observed the classification
+ on the validation set is higher than in the case Truck/Figurines.
 \end_layout
 
 \begin_layout Section
@@ -312,8 +315,8 @@ Multi-way classification
 \end_layout
 
 \begin_layout Standard
-To be able to compare the multiway MLP were going to implement, it is important
- to build other solutions to compare.
+In order to have elements of comparison for the multiway MLP we are going
+ to implement, it is important to have other solutions as baselines.
  Indeed it is expected that a MLP outperforms all linear solutions.
  Therefore we have implemented 3 linear classifiers described in the next
  three sections.
@@ -356,7 +359,7 @@ The linear classifier computes the 5-dimensional output :
 \begin_inset Formula $y_{i}=W[x_{i};1]$
 \end_inset
 
- (we had a constant coordinate in each data points in order to incorporate
+ (we add a constant coordinate in each data points in order to incorporate
  the bias in the matrix W).
  Then the class is determined by 
 \begin_inset Formula $argmax_{j}y_{i}(j)$
@@ -375,7 +378,7 @@ The linear classifier computes the 5-dimensional output :
 \begin_inset Formula $\Phi$
 \end_inset
 
-is a matrix where each column is a datapoint, and 
+ is a matrix where each column is a datapoint, and 
 \begin_inset Formula $T$
 \end_inset
 
@@ -461,7 +464,7 @@ is the error
 \begin_inset Formula $E_{2}$
 \end_inset
 
-computed only of the 
+ computed only of the 
 \begin_inset Formula $m^{th}$
 \end_inset
 
@@ -496,12 +499,12 @@ reference "fig:tichonov_optimization"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
+\align left
 \begin_inset Graphics
 	filename tichnov.eps
-	width 100text%
 	BoundingBox 0bp 0bp 415bp 168bp
 
 \end_inset
@@ -582,11 +585,23 @@ For early stopping, we have simply taken a validation set of 1/3 of the
 \begin_inset Formula $error(epoch)>0.95*error(epoch-1)$
 \end_inset
 
-) The learning rate is 0.005.
- After launching the training of this classifier 10 times, we observe an
- average misclassification of 1009 elements on the test set (with a standard
- deviation of 55 elements).
- 
+).
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Optimization-logistic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Table_resultlog"
+
+\end_inset
+
+ gives the result of our optimization of the learning rate, and the result
+ of the optimal classifier (learning rate = 0.005) on the test set.
 \end_layout
 
 \begin_layout Standard
@@ -596,8 +611,159 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="5">
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mu$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Averaged error on the validation set
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.9185
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.005
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1700
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.3200
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0005
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.4188
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Optimization-logistic"
+
+\end_inset
+
+Optimization of 
+\begin_inset Formula $\mu$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="5">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -655,101 +821,7 @@ Maximum
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.0005
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-19.1%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.3%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-18.3%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-19.5%
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.001
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-18.5%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.4%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-17.6%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-19.9%
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -758,7 +830,7 @@ Maximum
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -767,7 +839,7 @@ Maximum
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -776,7 +848,7 @@ Maximum
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -785,58 +857,11 @@ Maximum
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-22.9%
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-23.6%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-3.0%
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-19.8%
-\end_layout
-
-\end_inset
-</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-28.8%
+22.9%
 \end_layout
 
 \end_inset
@@ -850,6 +875,12 @@ Maximum
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Table_resultlog"
+
+\end_inset
+
 Error rate on the test set over 15 runs
 \end_layout
 
@@ -872,7 +903,7 @@ Support for multiple classes
 \end_layout
 
 \begin_layout Standard
-There are several ways to extends our binary MLP to support multiple classes.
+There are several ways to extend our binary MLP to support multiple classes.
  We can do pairwise binary classification or K one-vs-all binary classifiers
  and then have one linear layer to make a decision based on that.
  We chose however another solution which is to extend the last layer to
@@ -886,20 +917,29 @@ There are several ways to extends our binary MLP to support multiple classes.
 \end_inset
 
  for example.
+ As described in the guidelines, we used a squared error for training.
 \end_layout
 
 \begin_layout Subsubsection
-Hyperparameters Search
+Hyper-parameters Search
 \end_layout
 
 \begin_layout Standard
 Now that the MLP is working and the gradient has been tested, we need to
  find the optimal parameters -- namely 
-\begin_inset Formula $H1,H2,\nu,\mu$
+\begin_inset Formula $H1,H2$
 \end_inset
 
-.
- We run two hyperparameters search, one for 
+, learning rate (
+\begin_inset Formula $\mu$
+\end_inset
+
+) and momentum (
+\begin_inset Formula $\nu$
+\end_inset
+
+) .
+ We run two hyper-parameters search, one for 
 \begin_inset Formula $H1,H2$
 \end_inset
 
@@ -912,8 +952,8 @@ Now that the MLP is working and the gradient has been tested, we need to
 \end_inset
 
 .
- We assume naively that the sets of parameters are independent, altough
- we found that it is a reasonal assumption in practice.
+ We assume naively that the sets of parameters are independent, although
+ we found that it is a reasonable assumption in practice.
  
 \end_layout
 
@@ -921,12 +961,13 @@ Now that the MLP is working and the gradient has been tested, we need to
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename h1h2.pdf
-	width 100col%
+	scale 60
 	rotateOrigin rightBottom
 
 \end_inset
@@ -944,19 +985,16 @@ name "fig:h1h2"
 
 \end_inset
 
-Hyperparameter search for H1 and H2, 2 different values of learning rate
+Hyper-parameter search for H1 and H2, 2 different values of learning rate
  and momentum.
  A.
  Shows the final error on the vaidation set B.
- Shows
+ Shows the number of epochs.
+ The number of epochs is limited to 50 for speed of convergence reasons
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -966,7 +1004,7 @@ Hyperparameter search for H1 and H2, 2 different values of learning rate
 \end_layout
 
 \begin_layout Paragraph
-Number of n
+Number of neurons
 \end_layout
 
 \begin_layout Standard
@@ -992,8 +1030,8 @@ reference "fig:h1h2"
 \begin_inset Formula $H2=40$
 \end_inset
 
- as the optimal values.
- The difference between nearby values is relatively small and doesnt justify
+ .
+ The difference between nearby values is relatively small and doesn't justify
  running another search around those values.
 \end_layout
 
@@ -1002,19 +1040,383 @@ Learning rate and Momentum
 \end_layout
 
 \begin_layout Standard
-The second search have been done on a single quadcore computer and took
+The second search have been done on a single quad-core computer and took
  a couple of hours.
+ The value that were tested are for the learning rate: 0.001,0.005,0.01,0.05
+ and for the momentum: 0, 0.01, 0.05, 0.1 with H1=60, H2=40.
+ The results are shown in Tableau 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Optimization-of-learning"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mu$
+\end_inset
+
+
+\backslash
+
+\begin_inset Formula $\nu$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0251
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0251
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0224
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0242
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.005
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0106
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0141
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0114
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0109
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\boldsymbol{0.0075}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0095
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0095
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0123
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0078
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0107
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Optimization-of-learning"
+
+\end_inset
+
+Optimization of learning rate and momentum, with H1=60, H2=40
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Discussion
+Results & Discussion 
+\end_layout
+
+\begin_layout Standard
+Finally our best hyper parameters were 
+\begin_inset Formula $H1=60$
+\end_inset
+
+, 
+\begin_inset Formula $H2=40$
+\end_inset
+
+, 
+\begin_inset Formula $\mu=0.01$
+\end_inset
+
+, 
+\begin_inset Formula $\nu=0$
+\end_inset
+
+.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Error-multi"
+
+\end_inset
+
+ shows the evolution of the error on the validation set for this case.
+ The execution on the test set (Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-nulti_testset"
+
+\end_inset
+
+), has given about 90% accuracy, which beats every linear classifiers we
+ have implemented.
+ The confusion matrix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:confusion"
+
+\end_inset
+
+ shows that some classes are similar (like truck and car, and human and
+ animals).
+ In some cases, depending on the point of view where the picture has been
+ token, the ambiguity can be high.
+ For an example, figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A.-badclass"
+
+\end_inset
+
+shows one pattern that is not well classified by the binary classifier,
+ and we notice that even with a human eye it is hard to determine which
+ class it belongs.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1027,7 +1429,13 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Error on multiclass classification task with parameters:
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Error-multi"
+
+\end_inset
+
+Error on multi-class classification task with parameters: 
 \begin_inset Formula $H1=60$
 \end_inset
 
@@ -1061,19 +1469,17 @@ Error on multiclass classification task with parameters:
 \end_layout
 
 \begin_layout Standard
+\align center
 \begin_inset Float figure
 wide false
 sideways false
 status collapsed
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Sans titre.png
-	width 100col%
+	width 80col%
 
 \end_inset
 
@@ -1081,6 +1487,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:confusion"
+
+\end_inset
+
 Confusion matrix on the test set with optimal parameters
 \end_layout
 
@@ -1105,6 +1517,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="4">
 <features tabularvalignment="middle">
@@ -1196,7 +1609,60 @@ Maximum
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Results on the test set with optimal parameters over 15 runs
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Results-nulti_testset"
+
+\end_inset
+
+Error 0/1 on the test set with optimal parameters over 15 runs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename bad_classification.png
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:A.-badclass"
+
+\end_inset
+
+A.
+ Large negative 
+\begin_inset Formula $\boldsymbol{t}_{i}\boldsymbol{a}_{i}^{(3)}$
+\end_inset
+
+ -10 B.
+ Small negative 
+\begin_inset Formula $\boldsymbol{t}_{i}\boldsymbol{a}_{i}^{(3)}$
+\end_inset
+
+ -0.2 C.
+ Well classified 9.8 (on the binary classifier)
 \end_layout
 
 \end_inset
@@ -1220,9 +1686,12 @@ Conclusion
 \begin_layout Standard
 In general we have achieved the main goal of the project which is to train
  an MLP for multiway classification of the NORB dataset.
- The project was helpful to teach us the subtlety and caveats of train neural
- networks.
- The final results are good and on par with reported results on this dataset.
+ We have finally achieve a system that is 90% accurate, which is good and
+ on par with reported results for the NORB dataset (even if recent research
+ on deep learning outperforms largely any other methods).
+ The project was helpful to teach us the subtlety and caveats of training
+ neural networks.
+ 
 \end_layout
 
 \end_body
