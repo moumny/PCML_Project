@@ -100,6 +100,36 @@ The first task is to implement a binary classifier using a 2-hidden layer
 \end_layout
 
 \begin_layout Subsection
+Normalization
+\end_layout
+
+\begin_layout Standard
+We use the normalization procedure as described in the project guidelines.
+ We normalize the validation set and save the mean and variance.
+ These values are used to normalize the validation set et
+\end_layout
+
+\begin_layout Subsection
+Early Stopping
+\end_layout
+
+\begin_layout Standard
+After observing the evolution of the validation error after each epoch,
+ we noticed that stopping after the validation error start increasing is
+ not a good idea.
+ Indeed the curve is highly variable during the first epochs.
+ Instead we average the validation error over 4 epochs, that way, small
+ fluctualtion will be ignored.
+ Also given that validation error rarely goes up we decided to stop when
+ the improvement becomes unsignificant to speed up the training time i.e.
+ 
+\begin_inset Formula $error(epoch-3:epoch)>0.95\times error(epoch-7:epoch-4)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
 Results 
 \end_layout
 
@@ -318,7 +348,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename tichnov.fig
+	filename optimizationH12.pdf
+	scale 50
 
 \end_inset
 
@@ -431,18 +462,6 @@ There are several ways to extends our binary MLP to support multiple classes.
 \end_layout
 
 \begin_layout Subsubsection
-Early Stopping
-\end_layout
-
-\begin_layout Standard
-After observing the evolution of the validation error after each epoch,
- we noticed that stopping after the validation error start increasing is
- not a good idea.
- Indeed the curve is highly variable during the first epochs.
- Instead now we average the validation error over 4
-\end_layout
-
-\begin_layout Subsubsection
 Hyperparameters Search
 \end_layout
 
@@ -453,7 +472,42 @@ Now that the MLP is working and the gradient has been tested, we need to
 \end_inset
 
 .
- 
+ We run two hyperparameters search, one for 
+\begin_inset Formula $H1,H2$
+\end_inset
+
+ and one for 
+\begin_inset Formula $\nu$
+\end_inset
+
+ and 
+\begin_inset Formula $\mu$
+\end_inset
+
+.
+ We assume naively that the sets of parameters are independent, altough
+ we found that it is a reasonal assumption in practice.
+ .
+ The second search have been done on a single quadcore computer and took
+ a couple of hours.
+\end_layout
+
+\begin_layout Paragraph
+Number of neurons
+\end_layout
+
+\begin_layout Standard
+The first search has been done on a small cluster of 4 nodes and 32 cores
+ during 14 hours.
+ The values for both H1 and H2 are 10,20,30,40,60,80,100.
+ We also try two values of learning rates and momentum term to increase
+ the confidence in the result.
+ Moreover, we average the results for a single configuration over 3 runs.
+ The results are shown in Figure ?.
+\end_layout
+
+\begin_layout Paragraph
+Learning rate and Momentum
 \end_layout
 
 \begin_layout Subsection
