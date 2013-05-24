@@ -345,12 +345,12 @@ reference "fig:tichonov_optimization"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename tichnov.png
-	width 90text%
+	filename tichnov.eps
+	width 100text%
 	BoundingBox 0bp 0bp 415bp 168bp
 
 \end_inset
@@ -489,9 +489,46 @@ Now that the MLP is working and the gradient has been tested, we need to
 .
  We assume naively that the sets of parameters are independent, altough
  we found that it is a reasonal assumption in practice.
- .
  The second search have been done on a single quadcore computer and took
  a couple of hours.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename h1h2error.pdf
+	width 120col%
+	rotateOrigin rightBottom
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -514,6 +551,60 @@ Learning rate and Momentum
 
 \begin_layout Subsection
 Discussion
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename errors.eps
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Error on multiclass classification task with parameters:
+\begin_inset Formula $H1=60$
+\end_inset
+
+, 
+\begin_inset Formula $H2=40$
+\end_inset
+
+, 
+\begin_inset Formula $\mu=0.01$
+\end_inset
+
+, 
+\begin_inset Formula $\nu=0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
