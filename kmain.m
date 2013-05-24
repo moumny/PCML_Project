@@ -48,6 +48,8 @@ legend('correctly classified on val. set','error on training set','error on vali
 test_left_norm=normalize(double(test_left_s), mu_and_sigmas(:,1), mu_and_sigmas(:,2));
 test_right_norm=normalize(double(test_right_s), mu_and_sigmas(:,3), mu_and_sigmas(:,4));
 
+mauvais_exemples=zeros(576,3);
+
 count_error=0;
 confusion_matrix=zeros(5);
 for i=1:size(test_left_norm,2)
@@ -56,6 +58,7 @@ for i=1:size(test_left_norm,2)
     confusion_matrix(test_cat_s(i)+1,indice_max)= confusion_matrix(test_cat_s(i)+1,indice_max)+1;
     if (indice_max~=(test_cat_s(i)+1))
         count_error=count_error+1;
+        
     end
 end
 master_count_error(z)=count_error;
