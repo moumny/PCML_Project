@@ -76,11 +76,11 @@ Samuel Humeau, Benyounes Moumni
 \begin_layout Abstract
 The goal of this project is to implement and train a multilayer perceptron
  to classify images from the norb dataset.
- The dataset has XXXX images of object in 5 different categories: four-legged
+ The dataset has 10'800 images of objects in 5 different categories: four-legged
  animals, human figures, airplanes, trucks, and cars.
- The Train set contains YYY samples while the test set contains XXX.
- In Section 2 we describe the implementations and result for the first task
- (binary classification.
+ The Train set contains 5400 samples while the test set contains 5400.
+ In Section 1 we describe some implementation decisions and discuss the
+ result for the first task (binary classification).
  Section 3 and 4 describe the implementation of the mlp for multi way classifica
 tion.
  We conclude in section 5.
@@ -105,7 +105,7 @@ Normalization
 
 \begin_layout Standard
 We use the normalization procedure as described in the project guidelines.
- We normalize the validation set and save the mean and variance.
+ We normalize the training set and save the mean and variance.
  These values are used to normalize the validation set and test set.
  
 \end_layout
@@ -131,7 +131,7 @@ After observing the evolution of the validation error after each epoch,
 \end_layout
 
 \begin_layout Subsection
-Results 
+Results & Discussion
 \end_layout
 
 \begin_layout Standard
@@ -143,17 +143,22 @@ We tried the classifier with several configuration of number of layers and
  training set is very well separated.
  In this case there is not much optimization possible, as the difference
  in error in the validation is insignificant to make a decision.
+ Indeed because a logistic error is used and all the object are well classified
+ the error is always close to zero.
 \end_layout
 
 \begin_layout Subsubsection
-Extrapolation ?
+New dataset
 \end_layout
 
 \begin_layout Standard
 So to check the algorithm beyond testing the gradient we made another dataset
- from the 5class one.
+ from the 5 class one.
  The idea is that some other classes are less separable and would allow
  us to have a better idea of the performance of our implementation.
+ Indeed in this case the validation error takes a bit more time to go down
+ to zero.
+ 
 \end_layout
 
 \begin_layout Section
@@ -489,21 +494,20 @@ Now that the MLP is working and the gradient has been tested, we need to
 .
  We assume naively that the sets of parameters are independent, altough
  we found that it is a reasonal assumption in practice.
- The second search have been done on a single quadcore computer and took
- a couple of hours.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename h1h2error.pdf
-	width 100text%
-	clip
+	filename h1h2.pdf
+	width 100col%
+	rotateOrigin rightBottom
 
 \end_inset
 
@@ -514,7 +518,17 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:h1h2"
 
+\end_inset
+
+Hyperparameter search for H1 and H2, 2 different values of learning rate
+ and momentum.
+ A.
+ Shows the final error on the vaidation set B.
+ Shows
 \end_layout
 
 \end_inset
@@ -542,11 +556,34 @@ The first search has been done on a small cluster of 4 nodes and 32 cores
  We also try two values of learning rates and momentum term to increase
  the confidence in the result.
  Moreover, we average the results for a single configuration over 3 runs.
- The results are shown in Figure ?.
+ The results are shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:h1h2"
+
+\end_inset
+
+.
+ Based on these number we decided to select 
+\begin_inset Formula $H1=60$
+\end_inset
+
+ and 
+\begin_inset Formula $H2=40$
+\end_inset
+
+ as the optimal values.
+ The difference between nearby values is relatively small and doesnt justify
+ running another search around those values.
 \end_layout
 
 \begin_layout Paragraph
 Learning rate and Momentum
+\end_layout
+
+\begin_layout Standard
+The second search have been done on a single quadcore computer and took
+ a couple of hours.
 \end_layout
 
 \begin_layout Subsection
@@ -557,11 +594,7 @@ Discussion
 \begin_inset Float figure
 wide false
 sideways false
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -591,6 +624,44 @@ Error on multiclass classification task with parameters:
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Sans titre.png
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Confusion matrix on the test set with optimal parameters
 \end_layout
 
 \end_inset
