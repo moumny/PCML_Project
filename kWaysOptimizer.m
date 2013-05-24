@@ -58,3 +58,28 @@ for i=1:length(H1s)
    save('nb_epochs','nb_epochs');
    save('nb_missclassification','nb_missclassification');
 end
+
+%% learning rate, momentum
+
+lrs=[0.001,0.005,0.01,0.05];
+moms=[0,0.01,0.05,0.1];
+H1=60;
+H2=40;
+red=1;
+% the matrix imn which the results will be stored
+average_error_lr=zeros(length(lrs),length(moms));
+
+for i=1:length(lrs)
+   lr=lrs(i);
+   for j=1:length(moms)
+       mom=moms(j);
+       disp(strcat('optimization for lr=',num2str(lr),' and mom=',num2str(mom)));
+       vect_error=zeros(red,1);
+       for k=1:red
+        [optimal_weights, error, mu_and_sigmas, misclass]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s, lr,mom);
+        vect_error(k)=error(length(error));
+       end
+       average_error_lr(i,j)=mean(vect_error);
+   end
+   save('average_error_lr','average_error_lr');
+end

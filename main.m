@@ -1,5 +1,5 @@
 %% compute a binary training
-
+%% load dataset
 % if the following is true, then we use the dataset coming from truck and
 % car dataset, otherwise, we use the dataset coming from the figurines and
 % trucks (given)
@@ -17,7 +17,7 @@ end
 train_left_s=double(train_left_s);
 train_right_s=double(train_right_s);
 
-
+%% set parameters
 M=576;
 H1=10;
 H2=5;
@@ -25,13 +25,14 @@ K=1;
 momentum=0.05;
 learning_rate=0.01;
 
+%% train
 [optimal_weights, error, mu_and_sigmas, missclass, misclassvector, training_error]=trainBinaryMLP(M, H1, H2, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
-[haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), misclassvector);
-axes(haxes(1))
-ylabel('Errors on validation and training set')
-axes(haxes(2))
-ylabel('elements')
-legend('correctly classified on val. set','error on training set','error on validation set');
+% [haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), misclassvector);
+% axes(haxes(1))
+% ylabel('Errors on validation and training set')
+% axes(haxes(2))
+% ylabel('elements')
+% legend('correctly classified on val. set','error on training set','error on validation set');
 
 %% test the classifier obtained with the optimal weights on the test set
 test_left_norm=normalize(double(test_left_s), mu_and_sigmas(:,1), mu_and_sigmas(:,2));
@@ -44,12 +45,6 @@ for i=1:size(test_left_norm,2)
     class_max=sign(output);
     if (class_max~=test_cat_s(i))
         count_error=count_error+1;
-    end
-    if ((output>10) && countplot<2)
-        figure;
-       imshow(reshape(test_left_s(:,i),24,24)');
-       title(strcat('output :',num2str(output)));
-       countplot=countplot+1;
     end
 
 end

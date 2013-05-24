@@ -89,33 +89,39 @@ sub_train_x=perm_train_x(:, (cesure+1):end);
 sub_train_t=perm_train_t(:, (cesure+1):end);
 % we will make a gradient descent, we initialize our W coefficient with
 % random values
+for z=1:20
 W_logistic=randn(5,size(sub_train_x,1))/sqrt(size(sub_train_x,1));
 converged=false;
-k=200;
+k=2000;
 previous_error_on_validationset=Inf;
 count=0;
-while(~converged)
-    count=count+1;
-    disp(strcat('epock ',num2str(count)));
-   for i=1:size(sub_train_x,2)
-        %k=k+1;
-        sigma_k=exp(W_logistic*sub_train_x(:,i));
-        sigma_k=sigma_k/sum(sigma_k);
-        grad_v=(sigma_k-sub_train_t(:,i))*sub_train_x(:,i)';
-        W_logistic=W_logistic-1/k*grad_v;
-   end
-   
-   % now we compute the error on the validation set 
-    lsexp_y=log(sum(exp(W_logistic*valid_train_x),1));
-    errors=lsexp_y-sum(valid_train_t.*(W_logistic*valid_train_x));
-    
-    if(sum(errors)>previous_error_on_validationset*0.95)
-        converged=true;
-    else
-        previous_error_on_validationset=sum(errors);
+averaged_validation_error=0;
+
+    while(~converged)
+        count=count+1;
+        disp(strcat('epock ',num2str(count)));
+       for i=1:size(sub_train_x,2)
+            %k=k+1;
+            sigma_k=exp(W_logistic*sub_train_x(:,i));
+            sigma_k=sigma_k/sum(sigma_k);
+            grad_v=(sigma_k-sub_train_t(:,i))*sub_train_x(:,i)';
+            W_logistic=W_logistic-1/k*grad_v;
+       end
+
+       % now we compute the error on the validation set 
+        lsexp_y=log(sum(exp(W_logistic*valid_train_x),1));
+        errors=lsexp_y-sum(valid_train_t.*(W_logistic*valid_train_x));
+
+        if(sum(errors)>previous_error_on_validationset*0.95)
+            converged=true;
+        else
+            previous_error_on_validationset=mean(errors);
+        end
     end
+    averaged_validation_error=averaged_validation_error+previous_error_on_validationset;
 end
-previous_error_on_validationset
+averaged_validation_error
+
 %% Then we test the obtained solutions on the test set
 count_squared_error=0;
 count_tichonov=0;

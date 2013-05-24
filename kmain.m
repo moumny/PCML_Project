@@ -19,7 +19,7 @@ train_right_s=double(train_right_s);
 % load(['facult_dataset' filesep 'testing_set_right']);
 % test_right_s=double(testing_set_right);
 
-%%
+%% parameters
 
 
 M=576;
@@ -32,8 +32,9 @@ learning_rate=0.01;
 master_count_error=zeros(10,1);
 average_confmat=zeros(5);
 
-%for z=1:15
 z=1;
+
+%% train
 [optimal_weights, error, mu_and_sigmas, missclass, misclassvector, training_error]=trainMultiMLP(M, H1, H2, K, train_left_s,train_right_s, train_cat_s,learning_rate,momentum);
 [haxes,hline1,hline2] =plotyy(1:length(error),[training_error; error],1:length(error), 1800-misclassvector);
 axes(haxes(1))
@@ -49,7 +50,7 @@ test_left_norm=normalize(double(test_left_s), mu_and_sigmas(:,1), mu_and_sigmas(
 test_right_norm=normalize(double(test_right_s), mu_and_sigmas(:,3), mu_and_sigmas(:,4));
 
 mauvais_exemples=zeros(576,3);
-count_
+
 
 count_error=0;
 confusion_matrix=zeros(5);
@@ -62,9 +63,6 @@ for i=1:size(test_left_norm,2)
         
     end
 end
-master_count_error(z)=count_error;
-average_confmat=average_confmat+confusion_matrix;
-%end
-mean(master_count_error)
-std(master_count_error)
-average_confmat
+
+confusion_matrix
+disp(strcat('error on test set',num2str(count_error)));

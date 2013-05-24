@@ -60,7 +60,7 @@ while early_stopping == false  & epoch < 21
         error = error + accuLog(-cat_valid(i)*output); 
         num(i)=cat_valid(i)*output;
     end
-    size(find(num>0))
+    size(find(num>0));
     
     logisticError(epoch)= error/size(left_valid,2);
     missclass_vector=[missclass_vector, size(find(num>0),2)];
@@ -81,7 +81,7 @@ while early_stopping == false  & epoch < 21
 %         early_stopping = logisticError(end) >= logisticError(end-1);
 %     end
     
-    epoch = epoch + 1
+    epoch = epoch + 1;
 end
 
 
