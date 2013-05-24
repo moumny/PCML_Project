@@ -16,6 +16,7 @@ function [ optimal_weights, validationError, mu_and_sigmas, misclass, missclass_
 weights=initializeWeights(M,H1,H2,K);
 weights_1=zeros(length(weights),1);
 training_error_vector=[];
+missclass_vector=[];
 
 % Create target values 
 targets = zeros(K,size(labels,2)); %maybe -1 instead of 0 ? no. maybe normalize?
@@ -81,7 +82,26 @@ while ( early_stopping == false  && epoch < 50 )
     disp(strcat('epoch : ',num2str(epoch),',~ ',num2str(size(find(num>0),2)),' are correctly classified on the validation set (total=',num2str(length(num)),')'));
     
     new_misclass=size(left_valid,2)-size(find(num>0),2);
+    missclass_vector=[missclass_vector, new_misclass];
+    % made for report : compute error on training set 
+        %Compute error on validation set 
+    error = 0;
+    num = zeros(1,size(left_train_norm,2));
+    for i=1:size(left_train_norm,2)
+        [output,~]=kmlp(M,H1,H2,K, left_train_norm(:,i),right_train_norm(:,i),weights,false,0);
+        error = error +sum( (output-cat_train(:,i)).^2); 
+        % this is used to count the number of well classified point on the
+        % validation set
+        [~, class_max]=max(output);
+        [~, true_max]=max(cat_train(:,i));
+        num(i)=-1;
+        if (class_max==true_max)
+            num(i)=1;
+        end
+    end    
+    training_error_vector = [training_error_vector (error/size(left_train,2))];
     
+
     % every $(sliding_window) epochs, determine if early stopping 
     if (mod(epoch,sliding_window)==0)
         % if the mean on 5 epocks seems higher than last time
